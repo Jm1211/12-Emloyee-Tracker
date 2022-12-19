@@ -82,6 +82,22 @@ const viewAlLEmployees = () => {
     });
 };
 
+const viewAllRoles = () => {
+    const sql = `SELECT roles.id,
+                        roles.title,
+                        roles.salary,
+                        departments.name AS department
+                FROM roles
+                LEFT JOIN departments ON roles.department_id = departments.id`;
+         db.query(sql,(err, rows) => {
+            if (err) {
+                throw err;
+            }
+            console.table(rows);
+            startQuestions();
+        });        
+};
+
 const viewAllDpt = () => {
     const sql = `SELECT * FROM departments`;
     db.query(sql, (err, rows) => {
@@ -91,5 +107,78 @@ const viewAllDpt = () => {
       console.table(rows)
       startQuestions()
     });
-}
+};
+
+const addEmployee = () => {
+    return inquirer.prompt ([
+      {
+        type: 'input',
+        name: 'first_name',
+        message: 'What is the employees first name?', 
+        validate: first_nameInput => {
+            if (first_nameInput) {
+                return true;
+            } else {
+                console.log ("Please enter the employees first name!");
+                return false; 
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'last_name',
+        message: "What is the employees last name?",
+        validate: last_nameInput => {
+            if  (!last_nameInput) {
+                console.log ("Please enter the employees last name!");
+                return false; 
+            } else {
+                return true;
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'role_id',
+        message: "Please enter the id of the employees role",
+        validate: roles_idInput => {
+            if  (!roles_idInput) {
+                console.log ("Please enter the employees role ID!")
+                return false; 
+            } else {
+                return true;
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'manager_id',
+        message: "Please enter the id of the employees manager",
+        validate: manager_idInput => {
+            if  (!manager_idInput) {
+                console.log ("Please enter the employees manager ID!")
+                return false; 
+            } else {
+                return true;
+            }
+        }
+    }
+  ])
+    .then(answers => {
+    const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)`;
+    const params = [
+      answers.first_name,
+      answers.last_name,
+      answers.roles_id,
+      answers.manager_id
+    ];
+    db.query(sql, params, (err, result) => {
+      if (err) {
+        throw err
+      }
+      console.log('Your new employee as been added!')
+      startQuestions()
+    });
+  })
+  }
 
