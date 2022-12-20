@@ -68,7 +68,7 @@ const viewAlLEmployees = () => {
                         CONCAT (manager.first_name, "", manager.last_name) AS manager
                  FROM employees
                  LEFT JOIN roles 
-                 ON employees.role_id = roles.id
+                 ON employees.roles_id = roles.id
                  LEFT JOIN departments 
                  ON roles.department_id = departments.id
                  LEFT JOIN employees manager ON employees.manager_id = manager.id`
@@ -139,7 +139,7 @@ const addEmployee = () => {
     },
     {
         type: 'input',
-        name: 'role_id',
+        name: 'roles_id',
         message: "Please enter the id of the employees role",
         validate: roles_idInput => {
             if  (!roles_idInput) {
@@ -165,7 +165,7 @@ const addEmployee = () => {
     }
   ])
     .then(answers => {
-    const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)`;
+    const sql = `INSERT INTO employees (first_name, last_name, roles_id, manager_id) VALUES (?,?,?,?)`;
     const params = [
       answers.first_name,
       answers.last_name,
@@ -180,5 +180,136 @@ const addEmployee = () => {
       startQuestions()
     });
   })
-  }
+  };
 
+  
+  const addDepartment = () => {
+      inquirer
+    .prompt({
+      type: 'input',
+      name: 'newDepartment',
+      message: 'what would you like to name the new department?'
+    })
+      .then(answers => {
+        const sql = `INSERT INTO departments (name) VALUES (?)`;
+      const params = [
+        answers.newDepartment,
+      ];
+  
+      db.query(sql, params, (err, result) => {
+        if (err) {
+          throw err
+        }
+        console.log('Your new department as been added')
+        startQuestions()
+  
+      });
+    })
+  };
+  
+  const addRole = () => {
+    return inquirer.prompt ([
+      {
+        type: 'input',
+        name: 'title',
+        message: 'Whats the title of this role?', 
+        validate: titleInput => {
+            if (titleInput) {
+                return true;
+            } else {
+                console.log ("Please enter the title for this role!");
+                return false; 
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'salary',
+        message: "Whats the Salary for this role?",
+        validate: salaryInput => {
+            if  (!salaryInput) {
+                console.log ("Please enter this roles salary!");
+                return false; 
+            } else {
+                return true;
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'department_id',
+        message: "Please enter the department ID for this role",
+        validate: department_idInput => {
+            if  (!department_idInput) {
+                console.log ("Please enter the department ID!")
+                return false; 
+            } else {
+                return true;
+            }
+        }
+    },
+  ])  
+    .then(answers => {
+    const sql = `INSERT INTO roles (title, salary, department_id) VALUES (?,?,?)`;
+    const params = [
+      answers.title,
+      answers.salary,
+      answers.department_id
+    ];
+    db.query(sql, params, (err, result) => {
+      if (err) {
+        throw err
+      }
+      console.log('Your new role has been added')
+      startQuestions()
+    });
+  })
+  };
+
+  const updateEmpRole = () => {
+    return inquirer.prompt ([
+     {
+       type: 'input',
+       name: 'id',
+       message: 'please enter the employee id for the updated role', 
+       validate: idInput => {
+           if (idInput) {
+               return true;
+           } else {
+               console.log ("Please enter the employee ID");
+               return false; 
+           }
+       }
+   },
+   {
+       type: 'input',
+       name: 'roles_id',
+       message: "enter the new role ID",
+       validate: roles_idInput => {
+           if  (!roles_idInput) {
+               console.log ("Please enter updated role ID!");
+               return false; 
+           } else {
+               return true;
+           }
+       }
+   }
+ ]) 
+ .then(answers => {
+   const sql = `UPDATE employees SET roles_id= ? WHERE id= ?`;
+   const params = [
+     
+     answers.roles_id,
+     answers.id,
+   ];
+   db.query(sql, params, (err, result) => {
+     if (err) {
+       throw err
+     }
+     console.log('Your new employee has been updated')
+     startQuestions()
+   });
+ })
+ };
+ 
+ 

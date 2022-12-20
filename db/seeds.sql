@@ -17,14 +17,14 @@ VALUES
 ('Legal Team Lead', 250000, 4),
 ('Lawyer', 190000, 4);
 
-INSERT INTO employees (first_name, last_name, role_id, manager_id)
+INSERT INTO employees (first_name, last_name, roles_id, manager_id)
 VALUES
-("Harry", "Potter", 1),
-("Ronald", "Weasley", 2),
-("Hermonie", "Granger", 3),
-("Draco", "Malfoy", 4),
-("Severus", "Snape", 5),
-("Sirius", "Black", 6),
-("Rubeus", "Hagrid", 7),
-("Minerva", "Mcgonagall", 5),
-("Luna", "Lovegood", 4);
+("Harry", "Potter", 1, 1),
+("Ronald", "Weasley", 2, 2),
+("Hermonie", "Granger", 3, 3),
+("Draco", "Malfoy", 4, 4),
+("Severus", "Snape", 5, 5),
+("Sirius", "Black", 6, 6),
+("Rubeus", "Hagrid", 7, 7),
+("Minerva", "Mcgonagall", 5, 8),
+("Luna", "Lovegood", 4, 9);
